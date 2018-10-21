@@ -14,9 +14,9 @@ build:
           chmod +x composer.phar
           mv composer.phar /usr/local/bin/composer
     - script:
-        name: install dependencies (production only)
+        name: install dependencies
         code: |
-          composer install -o --prefer-dist --no-interaction --no-dev
+          composer install -o --prefer-dist --no-interaction
     - script:
         name: move application files
         code: |
