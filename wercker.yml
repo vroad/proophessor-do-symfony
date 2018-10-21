@@ -1,0 +1,23 @@
+
+box: prooph/php:7.1-fpm
+
+build:
+  steps:
+    - script:
+        name: install dependencies (production only)
+        code: |
+          composer install -o --prefer-dist --no-interaction --no-dev
+    - script:
+        name: move application files
+        code: |
+          rm -rf $WERCKER_SOURCE_DIR/.git
+          cp -Rp $WERCKER_SOURCE_DIR/. /var/www/html
+          chown -R www-data:www-data /var/www/html
+    - internal/docker-push:
+        aws-access-key: $AWS_ACCESS_KEY_ID
+        aws-secret-key: $AWS_SECRET_ACCESS_KEY
+        aws-region: $AWS_REGION
+        aws-registry-id: $AWS_REGISTRY_ID
+        repository: vroad/proophessor-do-symfony
+        tag: $WERCKER_GIT_BRANCH
+        cmd: php-fpm
