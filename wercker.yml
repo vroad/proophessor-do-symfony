@@ -4,6 +4,12 @@ box: prooph/php:7.1-fpm
 build:
   steps:
     - script:
+        name: install composer
+        code: |
+          curl --fail https://getcomposer.org/download/$(curl -LSs https://api.github.com/repos/composer/composer/releases/latest | grep 'tag_name' | sed -e 's/.*: "//;s/".*//')/composer.phar > composer.phar
+          chmod +x composer.phar
+          mv composer.phar /usr/local/bin/composer
+    - script:
         name: install dependencies (production only)
         code: |
           composer install -o --prefer-dist --no-interaction --no-dev
