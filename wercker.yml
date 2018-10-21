@@ -17,6 +17,9 @@ build:
         name: install dependencies
         code: |
           composer install -o --prefer-dist --no-interaction
+
+push-phpfpm-ecr:
+  steps:
     - script:
         name: move application files
         code: |
@@ -28,6 +31,25 @@ build:
         aws-secret-key: $AWS_SECRET_ACCESS_KEY
         aws-region: $AWS_REGION
         aws-registry-id: $AWS_REGISTRY_ID
-        repository: vroad/proophessor-do-symfony
+        repository: vroad-prooph/phpfpm
+        tag: $WERCKER_GIT_BRANCH
+        cmd: php-fpm
+
+push-nginx-ecr:
+  steps:
+    - script:
+        name: move application files
+        code: |
+          rm -rf $WERCKER_SOURCE_DIR/.git
+          find $WERCKER_SOURCE_DIR ! -name "*.php" -type f -delete
+          cp -Rp $WERCKER_SOURCE_DIR/. /var/www/html
+          chown -R www-data:www-data /var/www/html
+          rm -rf /pipeline 
+    - internal/docker-push:
+        aws-access-key: $AWS_ACCESS_KEY_ID
+        aws-secret-key: $AWS_SECRET_ACCESS_KEY
+        aws-region: $AWS_REGION
+        aws-registry-id: $AWS_REGISTRY_ID
+        repository: vroad-prooph/phpfpm
         tag: $WERCKER_GIT_BRANCH
         cmd: php-fpm
