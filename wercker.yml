@@ -4,6 +4,10 @@ box: prooph/php:7.1-fpm
 build:
   steps:
     - script:
+        name: install make
+        code: |
+          apk add make
+    - script:
         name: install composer
         code: |
           curl --fail https://getcomposer.org/download/$(curl -LSs https://api.github.com/repos/composer/composer/releases/latest | grep 'tag_name' | sed -e 's/.*: "//;s/".*//')/composer.phar > composer.phar
